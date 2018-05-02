@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xmlns:context="http://www.springframework.org/schema/context"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd
+		http://www.springframework.org/schema/context http://www.springframework.org/schema/context/spring-context-4.3.xsd">
+
+	
+	<!-- 包扫描、只要标注了@Controller、@Service、 @Repository、@Component-->
+	
+	<!-- 只包含需要禁用原来的扫描规则 use-default-filters="false" -->
+	<!-- 
+	<context:component-scan base-package="com.atguigu" use-default-filters="false">
+		<context:include-filter type="annotation" expression=""/>	
+	</context:component-scan>
+	 -->
+	 
+	<bean id="person" class="com.atguigu.bean.Person" scope="prototype">
+		<property name="age" value="18"/>
+		<property name="name" value="zhangsan"/>
+	</bean>
+	
+</beans>
