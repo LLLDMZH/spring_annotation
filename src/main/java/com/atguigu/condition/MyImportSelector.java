@@ -15,6 +15,9 @@ public class MyImportSelector implements ImportSelector{
 	 * the {@link AnnotationMetadata} of the importing @{@link Configuration} class.
 	 * 返回值：就是要导入到容器中的组件的全类名
 	 * AnnotationMetadata:当前标注@Import注解的类的所有注解信息
+	 * 
+	 * 
+	 * SpringBoot中使用的多
  	 */
 	@Override
 	public String[] selectImports(AnnotationMetadata importingClassMetadata) {
@@ -32,7 +35,7 @@ public class MyImportSelector implements ImportSelector{
 		System.out.println("memberClassNames:" + Arrays.toString(memberClassNames));
 		String superClassName = importingClassMetadata.getSuperClassName();
 		System.out.println("superClassName:" + superClassName);
-		return new String[] {"com.atguigu.bean.Red", "com.atguigu.bean.Blue"};
+		return new String[] {"com.atguigu.bean.Blue"};
 	}
 
 }
