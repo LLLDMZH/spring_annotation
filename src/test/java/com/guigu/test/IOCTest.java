@@ -9,7 +9,9 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.context.annotation.AnnotationConfigApplicationContext;
 import org.springframework.core.env.Environment;
 
+import com.atguigu.bean.Color;
 import com.atguigu.bean.Person;
+import com.atguigu.bean.Rainbow;
 import com.atguigu.config.MainConfig;
 import com.atguigu.config.MainConfig1;
 import com.atguigu.config.MainConfig2;
@@ -20,7 +22,11 @@ public class IOCTest {
 	
 	@Test
 	public void testImport() {
+		System.out.println("=================");
 		printBeans(applicationContext);
+		Rainbow rainbow = (Rainbow) applicationContext.getBean("rainBow");
+		System.out.println(rainbow);
+		System.out.println("=================");
 		
 		
 		// 工厂Bean获取的是调用getObject创建的对象
@@ -63,10 +69,13 @@ public class IOCTest {
 	public void test02() {
 		ApplicationContext applicationContext = new AnnotationConfigApplicationContext(MainConfig2.class);
 		
-//		String[] names = applicationContext.getBeanDefinitionNames();
-//		for (String name : names) {
-//			System.out.println(name);
-//		}
+		String[] names = applicationContext.getBeanDefinitionNames();
+		for (String name : names) {
+			System.out.println(name);
+		}
+		Color color = (Color) applicationContext.getBean("com.atguigu.bean.Color");
+		System.out.println(color);
+		
 		System.out.println("ioc容器创建完成");
 		// 默认是单例的 Scope控制作用范围
 		Person person = (Person) applicationContext.getBean("person");

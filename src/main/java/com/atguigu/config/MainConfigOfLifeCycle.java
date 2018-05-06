@@ -1,35 +1,66 @@
 package com.atguigu.config;
 
-import org.springframework.beans.factory.config.ConfigurableBeanFactory;
+import org.springframework.beans.factory.BeanCreationException;
 import org.springframework.context.annotation.Bean;
+import org.springframework.context.annotation.ComponentScan;
 import org.springframework.context.annotation.Configuration;
-import org.springframework.context.annotation.Scope;
 
 import com.atguigu.bean.Car;
 
 /**
- * beanµÄÉúÃüÖÜÆÚ
- *     bean´´½¨----³õÊ¼»¯----Ïú»Ù¹ı³Ì
- * ÈİÆ÷¹ÜÀíbeanµÄÉúÃüÖÜÆÚ£º
- * ÎÒÃÇ¿ÉÒÔ×Ô¶¨Òå³õÊ¼»¯ºÍÏú»Ù·½·¨£»ÈİÆ÷ÔÚbean½øĞĞµ½µ±Ç°ÉúÃüÖÜÆÚµÄÊ±ºòÀ´µ÷ÓÃÎÒÃÇ×Ô¶¨ÒåµÄ³õÊ¼»¯ºÍÏú»Ù·½·¨¡£
+ * beançš„ç”Ÿå‘½å‘¨æœŸ
+ *     beanåˆ›å»º----åˆå§‹åŒ–----é”€æ¯è¿‡ç¨‹
+ * å®¹å™¨ç®¡ç†beançš„ç”Ÿå‘½å‘¨æœŸï¼š
+ * æˆ‘ä»¬å¯ä»¥è‡ªå®šä¹‰åˆå§‹åŒ–å’Œé”€æ¯æ–¹æ³•ï¼›å®¹å™¨åœ¨beanè¿›è¡Œåˆ°å½“å‰ç”Ÿå‘½å‘¨æœŸçš„æ—¶å€™æ¥è°ƒç”¨æˆ‘ä»¬è‡ªå®šä¹‰çš„åˆå§‹åŒ–å’Œé”€æ¯æ–¹æ³•ã€‚
  * 
- * ¹¹Ôì£¨¶ÔÏó´´½¨£©
- * 		µ¥ÊµÀı£ºÔÚÈİÆ÷Æô¶¯µÄÊ±ºò´´½¨¶ÔÏó
- * 		¶àÊµÀı£ºÔÚÃ¿´Î»ñÈ¡µÄÊ±ºò´´½¨¶ÔÏó
- * ³õÊ¼»¯£º
- * 	    ¶ÔÏó´´½¨Íê³É£¬²¢ÊôĞÔ¸³ÖµºÃ£¬µ÷ÓÃ³õÊ¼»¯·½·¨
+ * æ„é€ ï¼ˆå¯¹è±¡åˆ›å»ºï¼‰
+ * 		å•å®ä¾‹ï¼šåœ¨å®¹å™¨å¯åŠ¨çš„æ—¶å€™åˆ›å»ºå¯¹è±¡
+ * 		å¤šå®ä¾‹ï¼šåœ¨æ¯æ¬¡è·å–çš„æ—¶å€™åˆ›å»ºå¯¹è±¡
+ *
+ *	postProcessBeforeInitializationï¼šåœ¨ä»»ä½•çš„åˆå§‹åŒ–ä¹‹å‰æ‰§è¡Œ
+ *	åˆå§‹åŒ–ï¼š
+ * 	    å¯¹è±¡åˆ›å»ºå®Œæˆï¼Œå¹¶å±æ€§èµ‹å€¼å¥½ï¼Œè°ƒç”¨åˆå§‹åŒ–æ–¹æ³•
+ *	postProcessAfterInitializationï¼šåˆå§‹åŒ–ä¹‹åæ‰§è¡Œ    		
+ *  
+ *  é”€æ¯ï¼š
+ *    å•å®ä¾‹Beanï¼šåœ¨å®¹å™¨å…³é—­çš„æ—¶å€™é”€æ¯
+ *    å¤šå®ä¾‹Beanï¼šå®¹å™¨ä¸ä¼šç®¡ç†è¿™ä¸ªBeanï¼Œå®¹å™¨ä¸ä¼šè°ƒç”¨é”€æ¯æ–¹æ³•ã€‚éœ€è¦æ‰‹åŠ¨è°ƒç”¨é”€æ¯ã€‚
  * 
- * Ïú»Ù£º
- *    µ¥ÊµÀıBean£ºÔÚÈİÆ÷¹Ø±ÕµÄÊ±ºòÏú»Ù
- *    ¶àÊµÀıBean£ºÈİÆ÷²»»á¹ÜÀíÕâ¸öBean£¬ÈİÆ÷²»»áµ÷ÓÃÏú»Ù·½·¨¡£ĞèÒªÊÖ¶¯µ÷ÓÃÏú»Ù¡£
+ * 	BeanPostProcessoråŸç†ï¼š
  * 
- * 1)¡¢Ö¸¶¨³õÊ¼»¯ºÍÏú»Ù·½·¨£º
- * 		Í¨¹ı@BeanÖ¸¶¨init-method="" destroy-method=""
+ * 		1)ã€populateBean(beanName, mbd, instanceWrapper);ç»™Beançš„å±æ€§å€¼èµ‹å¥½
+ * 			éå†å¾—åˆ°å®¹å™¨ä¸­æ‰€æœ‰çš„BeanPostProcessorï¼ŒæŒ¨ä¸ªæ‰§è¡ŒpostProcessBeforeInitialization
+ * 			ä¸€æ—¦è¿”å›nullå°±è·³å‡ºforå¾ªç¯ï¼Œä¸ä¼šæ‰§è¡Œåé¢çš„postProcessBeforeInitialization
+ * 		2)ã€	ä¸‹é¢éƒ½å±äºæ•´ä¸ªåˆå§‹åŒ–è¿‡ç¨‹ã€‚
+ * 			{
+				1.applyBeanPostProcessorsBeforeInitialization(wrappedBean, beanName);
+				2.invokeInitMethods(beanName, wrappedBean, mbd); è‡ªå®šä¹‰åˆå§‹åŒ–æ–¹æ³•
+				3.applyBeanPostProcessorsAfterInitialization(wrappedBean, beanName);
+			}
+		
  * 
+ * 1)ã€æŒ‡å®šåˆå§‹åŒ–å’Œé”€æ¯æ–¹æ³•ï¼š
+ * 		é€šè¿‡@BeanæŒ‡å®šinit-method="" destroy-method=""
+ * 
+ * 2)ã€é€šè¿‡è®©Beanå®ç°InitializingBeanæ¥å£(å®šä¹‰åˆå§‹åŒ–é€»è¾‘)ï¼Œ
+ * 	   DisposableBeanæ¥å£(å®šä¹‰é”€æ¯é€»è¾‘)
+ * 3)ã€ä½¿ç”¨JSR250:
+ * 		@PostConstructï¼š æ ‡æ³¨åœ¨æ–¹æ³•ä½ç½®ã€‚
+ * 		@PreDestroy: Beanè¢«ç§»é™¤ä¹‹å‰ã€‚
+ * 4)ã€BeanPostProcessorã€interfaceã€‘:beançš„åç½®å¤„ç†å™¨
+ * 		åœ¨beanåˆå§‹åŒ–å‰åè¿›è¡Œä¸€äº›å¤„ç†å·¥ä½œï¼š
+ * 		postProcessBeforeInitializationï¼šåœ¨ä»»ä½•çš„åˆå§‹åŒ–ä¹‹å‰æ‰§è¡Œ
+ *	 	postProcessAfterInitializationï¼šåˆå§‹åŒ–ä¹‹åæ‰§è¡Œ    		
+ *
+ *
+ *
+ *	Springåº•å±‚å¯¹BeanPostProcessoråº•å±‚çš„ä½¿ç”¨
+ *		beanèµ‹å€¼ï¼Œæ³¨å…¥å…¶ä»–ç»„ä»¶ï¼Œ@Autowired,ç”Ÿå‘½å‘¨æœŸæ³¨è§£åŠŸèƒ½ï¼Œ@Async,
  * @author lenovo
  *
  */
 @Configuration
+@ComponentScan("com.atguigu.bean")
 public class MainConfigOfLifeCycle {
 	
 	//@Scope(value = ConfigurableBeanFactory.SCOPE_PROTOTYPE)

@@ -1,5 +1,8 @@
 package com.atguigu.bean;
 
+import org.springframework.stereotype.Component;
+
+@Component
 public class Car {
 
 	public Car() {

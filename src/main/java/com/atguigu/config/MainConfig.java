@@ -14,7 +14,7 @@ import com.atguigu.bean.Person;
 /**
  * 配置类==配置文件
  * @author lenovo
- *
+ * 组件扫描简单类名
  */
 @Configuration()	//告诉Spring 这是一个配置类
 @ComponentScan(value = "com.atguigu",includeFilters = {
