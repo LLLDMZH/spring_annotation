@@ -1,0 +1,75 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans.xsd">
+
+	<!-- 注册service -->
+	<bean id = "someService" class="com.atguigu.service.SomeServiceImpl"/>
+	
+	<bean id = "someService2" class="com.atguigu.service.SomeServiceImpl2"/>
+	
+	
+	<!-- MethodBeforeAdvice -->	
+	<bean id="beforeAdvice" class="com.atguigu.aop.MyMethodBeforeAdvice"/>
+	<!-- AfterReturningAdvice -->
+	<bean id="afterReturningAdvice" class="com.atguigu.aop.MyAfterReturningAdvice"/>
+	
+	<!-- 如果传入的 没有接口实现 那么interfaces就不用写 使用cglib动态代理 -->
+	<bean id="serviceProxy" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="someService"/>
+		<property name="interfaces" value="com.atguigu.service.SomeService"/>
+		<property name="interceptorNames" value="beforeAdvice"/>
+		<property name="optimize" value="true"/>
+	</bean>	
+	
+	
+	<!--interceptorNames 这里传入的是通知 那么就是全部切入  -->
+	<bean id="serviceProxy2" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="someService"/>
+		<property name="interfaces" value="com.atguigu.service.SomeService"/>
+		<property name="interceptorNames" value="beforeAdvice,afterReturningAdvice"/>
+	</bean>	
+	
+	<!-- 配置顾问 这样做到准确的匹配  org.springframework.aop.support.NameMatchMethodPointcutAdvisor-->
+	<bean id="afterReturningAdvisor" class="org.springframework.aop.support.NameMatchMethodPointcutAdvisor">
+		<property name="advice" ref="afterReturningAdvice"/>
+		<property name="mappedNames">
+			<array>
+				<value>doSome</value>
+			</array>
+		</property>
+	</bean>
+	
+	<!--interceptorNames 传入顾问  -->
+	<bean id="serviceProxy3" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="someService"/>
+		<property name="interfaces" value="com.atguigu.service.SomeService"/>
+		<property name="interceptorNames" value="beforeAdvice,afterReturningAdvisor"/>
+	</bean>	
+	
+	<!-- 配置顾问 这样做到准确的匹配  org.springframework.aop.support.NameMatchMethodPointcutAdvisor-->
+	<bean id="afterReturningAdvisor2" class="org.springframework.aop.support.RegexpMethodPointcutAdvisor">
+		<property name="advice" ref="afterReturningAdvice"/>
+		<!-- 全县定方法名  .任意字符 *前面出现0到N次   |-->
+		<property name="pattern" value="com.atguigu.service.SomeService.doOther()"/>
+	</bean>
+	
+	<!--interceptorNames 传入顾问   可以创建指定bean的指定代理 但是只能指定一个目标对象-->
+	<bean id="serviceProxy4" class="org.springframework.aop.framework.ProxyFactoryBean">
+		<property name="target" ref="someService"/>
+		<!-- <property name="targetName"></property> -->
+		<property name="interfaces" value="com.atguigu.service.SomeService"/>
+		<property name="interceptorNames" value="beforeAdvice,afterReturningAdvisor2"/>
+	</bean>	
+	
+	<!-- 你这样是给所有的bean都切入了   defaultAdvisorAutoProxyCreator -->
+	<!-- <bean class="org.springframework.aop.framework.autoproxy.DefaultAdvisorAutoProxyCreator"/>	 -->
+	
+	<!-- 获取的是bean 而不是proxy -->
+    <bean class="org.springframework.aop.framework.autoproxy.BeanNameAutoProxyCreator">
+    	<property name="beanNames" value="someService"/>
+    	<property name="interceptorNames" value="beforeAdvice, afterReturningAdvisor"/>
+    </bean>	
+    
+	
+</beans>
